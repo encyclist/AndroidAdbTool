@@ -95,6 +95,7 @@ private fun AboutSystem(device: DeviceInfo) {
             QuickItem("icon/ic_reboot.svg", "重启手机", modifier = Modifier.clickable { ADBUtil.reboot(device.device,ADBUtil.RebootType.SYSTEM) })
             QuickItem("icon/ic_recover.svg", "重启到Recover", modifier = Modifier.clickable { ADBUtil.reboot(device.device,ADBUtil.RebootType.RECOVER) })
             QuickItem("icon/ic_fastboot.svg", "重启到Fastboot", modifier = Modifier.clickable { ADBUtil.reboot(device.device,ADBUtil.RebootType.FASTBOOT) })
+            QuickItem("icon/ic_fastboot.svg", "重启到Bootloader", modifier = Modifier.clickable { ADBUtil.reboot(device.device,ADBUtil.RebootType.BOOTLOADER) })
         }
     }
 }

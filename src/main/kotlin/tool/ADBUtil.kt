@@ -529,7 +529,7 @@ object ADBUtil {
     }
 
     enum class RebootType(val type:String){
-        SYSTEM(""), RECOVER("recovery"), FASTBOOT("bootloader")
+        SYSTEM(""), RECOVER("recovery"), FASTBOOT("fastboot"), BOOTLOADER("bootloader")
     }
 
     class BatteryInfo(){

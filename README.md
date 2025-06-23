@@ -1,6 +1,6 @@
 # AndroidAdbTool
 
-![screen_1](img/screen_1.png)
+![screen_1](img/screen_1.jpg)
 
 ## 说明
 * 自带ADB文件
