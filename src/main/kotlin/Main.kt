@@ -1,10 +1,13 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draganddrop.DragAndDropEvent
+import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -54,27 +57,33 @@ fun App() {
     var selectMainNav by remember { mutableStateOf<MainNav?>(null) }
     var device by remember { mutableStateOf<DeviceInfo?>(null) }
 
-    Scaffold(bottomBar = {
-        MainNav(modifier = Modifier.width(200.dp),refreshConnectedDevicesList,connectedDevicesList, { selectMainNav = it }) {
-            if (it != null) {
-                device = it
-            }
-        }
-    }) {
-        Box(modifier = Modifier.background(defaultBgColor).fillMaxHeight().fillMaxWidth().padding(start = 200.dp)) {
-            if(device != null){
-                when (selectMainNav) {
-                    is CurrentAppInfo -> CurrentAppInfoPage(device!!)
-                    is PhoneInfo -> PhoneInfoPage(device!!)
-                    is QuickFun -> QuickPage(device!!)
-                    is FileManage -> FileManager(device!!, ADBUtil.hasRoot(device!!.device))
-                    is Install -> InstallPage(device!!)
+    MaterialTheme {
+        Scaffold(bottomBar = {
+            MainNav(
+                modifier = Modifier.width(200.dp),
+                refreshConnectedDevicesList,
+                connectedDevicesList,
+                { selectMainNav = it }) {
+                if (it != null) {
+                    device = it
                 }
             }
-            when (selectMainNav) {
-                is DeviceRecord -> DeviceRecordPage(refreshConnectedDevicesList,connectedDevicesList)
-                is ProguardGenerator -> ProguardGeneratorPage()
-                is About -> AboutPage()
+        }) {
+            Box(modifier = Modifier.background(defaultBgColor).fillMaxHeight().fillMaxWidth().padding(start = 200.dp)) {
+                if (device != null) {
+                    when (selectMainNav) {
+                        is CurrentAppInfo -> CurrentAppInfoPage(device!!)
+                        is PhoneInfo -> PhoneInfoPage(device!!)
+                        is QuickFun -> QuickPage(device!!)
+                        is FileManage -> FileManager(device!!, ADBUtil.hasRoot(device!!.device))
+                        is Install -> InstallPage(device!!)
+                    }
+                }
+                when (selectMainNav) {
+                    is DeviceRecord -> DeviceRecordPage(refreshConnectedDevicesList, connectedDevicesList)
+                    is ProguardGenerator -> ProguardGeneratorPage()
+                    is About -> AboutPage()
+                }
             }
         }
     }

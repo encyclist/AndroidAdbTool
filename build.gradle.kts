@@ -5,6 +5,7 @@ val versionName = "1.0.0"
 plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 group = "cn.erning"

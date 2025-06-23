@@ -1,16 +1,26 @@
 package page
 
 import UZipFile
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.InternalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
+import androidx.compose.ui.draganddrop.DragAndDropEvent
+import androidx.compose.ui.draganddrop.DragAndDropTarget
+import androidx.compose.ui.draganddrop.DragData
+import androidx.compose.ui.draganddrop.dragData
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.scene.ComposeSceneDragAndDropTarget
 import androidx.compose.ui.unit.dp
 import bean.DeviceInfo
 import tool.ADBUtil
@@ -23,7 +33,7 @@ import java.io.File
  * @auth 二宁
  * @date 2023/12/4
  */
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, InternalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun InstallPage(device: DeviceInfo){
     var apkFile by remember { mutableStateOf<String?>(null) }
@@ -52,18 +62,20 @@ fun InstallPage(device: DeviceInfo){
                     backgroundColor = Color.White
                 ),
                 shape = RectangleShape,
-                modifier = Modifier.fillMaxWidth().onExternalDrag(
-                    onDrop = {
-                        if(it.dragData is DragData.FilesList){
-                            val files = (it.dragData as DragData.FilesList).readFiles()
+                modifier = Modifier.dragAndDropTarget({true},object :DragAndDropTarget{
+                    override fun onDrop(event: DragAndDropEvent): Boolean {
+                        if(event.dragData() is DragData.FilesList){
+                            val files = (event.dragData() as DragData.FilesList).readFiles()
                             if(files.size != 1){
-                                return@onExternalDrag
+                                return false
                             }
                             val file = files.first()
                             apkFile = file.removePrefix("file:")
+                            return true
                         }
+                        return false
                     }
-                ),
+                }),
                 value = apkFile ?: "" ,
                 onValueChange = {apkFile=it},
                 singleLine = true,
@@ -90,18 +102,20 @@ fun InstallPage(device: DeviceInfo){
                     backgroundColor = Color.White
                 ),
                 shape = RectangleShape,
-                modifier = Modifier.fillMaxWidth().onExternalDrag(
-                    onDrop = {
-                        if(it.dragData is DragData.FilesList){
-                            val files = (it.dragData as DragData.FilesList).readFiles()
+                modifier = Modifier.dragAndDropTarget({true},object :DragAndDropTarget{
+                    override fun onDrop(event: DragAndDropEvent): Boolean {
+                        if(event.dragData() is DragData.FilesList){
+                            val files = (event.dragData() as DragData.FilesList).readFiles()
                             if(files.size != 1){
-                                return@onExternalDrag
+                                return false
                             }
                             val file = files.first()
                             jksPath = file.removePrefix("file:")
+                            return true
                         }
+                        return false
                     }
-                ),
+                }),
                 value = jksPath ?: "" ,
                 onValueChange = {jksPath=it},
                 singleLine = true,
