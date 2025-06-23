@@ -447,6 +447,23 @@ object ADBUtil {
     }
     // endregion
 
+    // region 开发
+    fun enableAdbWifi(deviceId: String) {
+        val command = arrayOf("-s", deviceId, "tcpip","5555")
+        CLUtil.execute(arrayOf(ADB_PATH, *command))
+    }
+    fun showBorder(deviceId: String,show: Boolean) {
+        val command = arrayOf("-s", deviceId, "shell", "setprop","debug.layout","$show;","service","call","activity","1599295570")
+        CLUtil.execute(arrayOf(ADB_PATH, *command))
+    }
+    fun isShowBorder(deviceId: String): Boolean {
+        val command = arrayOf("-s", deviceId, "shell", "getprop","debug.layout")
+        val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
+        val data = parseResult(result)
+        return data.getOrNull(0)?.getOrNull(0).toBoolean()
+    }
+    // endregion
+
     /**
      * 获取ADB路径
      */

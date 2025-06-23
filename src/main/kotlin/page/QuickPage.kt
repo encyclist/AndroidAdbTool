@@ -49,6 +49,7 @@ fun QuickPage(device: DeviceInfo) {
 @Composable
 private fun CommonFunction(device: DeviceInfo) {
     var showInputTextDialog by remember { mutableStateOf(false) }
+    var showBorder by remember { mutableStateOf(ADBUtil.isShowBorder(device.device)) }
 
     BaseQuick("常用功能", color = Color(255, 152, 0)) {
         FlowRow() {
@@ -60,6 +61,13 @@ private fun CommonFunction(device: DeviceInfo) {
                 val localFile = File(FileUtil.getDesktopFile(),deviceFile.split("/").last()).absolutePath
                 ADBUtil.pull(device.device,deviceFile,localFile)
                 ADBUtil.deleteFile(device.device,deviceFile)
+            })
+            QuickItem("icon/ic_app_info.svg", "启用ADB Wi-Fi", modifier = Modifier.clickable {
+                ADBUtil.enableAdbWifi(device.device)
+            })
+            QuickItem("icon/ic_app_info.svg", if(showBorder) "隐藏布局边界" else "显示布局边界", modifier = Modifier.clickable {
+                ADBUtil.showBorder(device.device,!showBorder)
+                showBorder = ADBUtil.isShowBorder(device.device)
             })
         }
     }
