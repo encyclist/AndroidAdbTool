@@ -162,7 +162,7 @@ fun FileManager(device: DeviceInfo,root:Boolean = false) {
     }
 }
 
-private fun pullFile(deviceId: String,source:FileBean,open:Boolean,root:Boolean){
+private fun pullFile(deviceId: String?,source:FileBean,open:Boolean,root:Boolean){
     val fileDialog = FileDialog(ComposeWindow(),"导出文件", FileDialog.SAVE)
     fileDialog.isMultipleMode = false
     fileDialog.file = source.name
@@ -181,7 +181,7 @@ private fun pullFile(deviceId: String,source:FileBean,open:Boolean,root:Boolean)
     }
 }
 
-private fun pullFileToCache(deviceId: String,source:FileBean,open:Boolean,root:Boolean){
+private fun pullFileToCache(deviceId: String?,source:FileBean,open:Boolean,root:Boolean){
     val cacheDir = FileUtil.getCacheDir()
     val file = File(cacheDir,source.name)
     ADBUtil.pull(deviceId,"${source.parent}${source.name}",file.absolutePath,root)
@@ -190,7 +190,7 @@ private fun pullFileToCache(deviceId: String,source:FileBean,open:Boolean,root:B
     }
 }
 
-private fun pushFile(deviceId: String,deviceDir:String,root:Boolean){
+private fun pushFile(deviceId: String?,deviceDir:String,root:Boolean){
     val fileDialog = FileDialog(ComposeWindow(),"上传文件",FileDialog.LOAD)
     fileDialog.isMultipleMode = false
     fileDialog.isVisible = true

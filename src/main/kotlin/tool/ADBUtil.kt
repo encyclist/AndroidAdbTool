@@ -54,7 +54,9 @@ object ADBUtil {
     /**
      * 是否有Root
      */
-    fun hasRoot(deviceId: String): Boolean {
+    fun hasRoot(deviceId: String?): Boolean {
+        deviceId ?: return false
+
         val command = arrayOf("-s",deviceId,"shell","su","-c","ls","/")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         return result.trim().isNotEmpty()
@@ -63,7 +65,9 @@ object ADBUtil {
     /**
      * 重启
      */
-    fun reboot(deviceId: String,type:RebootType = RebootType.SYSTEM){
+    fun reboot(deviceId: String?,type:RebootType = RebootType.SYSTEM){
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "reboot",type.type)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -71,7 +75,9 @@ object ADBUtil {
     /**
      * 截图
      */
-    fun screenshot(deviceId: String,file: String? = null): String {
+    fun screenshot(deviceId: String?,file: String? = null): String {
+        deviceId ?: return ""
+
         val mFile = file ?: "/sdcard/${System.currentTimeMillis()}.png"
         val command = arrayOf("-s", deviceId, "shell","screencap",mFile)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
@@ -82,7 +88,9 @@ object ADBUtil {
     /**
      * 获取系统信息
      */
-    fun getProp(deviceId: String,key:String = ""): HashMap<String, String> {
+    fun getProp(deviceId: String?,key:String = ""): HashMap<String, String> {
+        deviceId ?: return hashMapOf()
+
         val command = arrayOf("-s", deviceId, "shell","getprop" ,key)
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val map = hashMapOf<String,String>()
@@ -100,7 +108,9 @@ object ADBUtil {
     /**
      * 获取分辨率
      */
-    fun getPhysicalSize(deviceId: String): String {
+    fun getPhysicalSize(deviceId: String?): String {
+        deviceId ?: return ""
+
         val command = arrayOf("-s", deviceId, "shell","wm","size")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -110,7 +120,9 @@ object ADBUtil {
     /**
      * 获取dpi
      */
-    fun getDensity(deviceId: String): String {
+    fun getDensity(deviceId: String?): String {
+        deviceId ?: return ""
+
         val command = arrayOf("-s", deviceId, "shell","wm","density")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -120,7 +132,9 @@ object ADBUtil {
     /**
      * 获取电池信息
      */
-    fun getBatteryInfo(deviceId: String):BatteryInfo{
+    fun getBatteryInfo(deviceId: String?):BatteryInfo{
+        deviceId ?: return BatteryInfo()
+
         val command = arrayOf("-s", deviceId, "shell","dumpsys","battery")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -143,12 +157,16 @@ object ADBUtil {
     /**
      * 获取AndroidId
      */
-    fun getAndroidId(deviceId: String): String {
+    fun getAndroidId(deviceId: String?): String {
+        deviceId ?: return ""
+
         val command = arrayOf("-s", deviceId, "shell","settings","get","secure","android_id")
         return CLUtil.execute(arrayOf(ADB_PATH, *command)).trim()
     }
 
-    fun getMemoryInfo(deviceId: String):MemoryInfo{
+    fun getMemoryInfo(deviceId: String?):MemoryInfo{
+        deviceId ?: return MemoryInfo()
+
         val command = arrayOf("-s", deviceId, "shell","cat","/proc/meminfo")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -171,7 +189,9 @@ object ADBUtil {
     /**
      * 导出文件
      */
-    fun pull(deviceId: String, deviceFile: String, localFile: String, su:Boolean = false) {
+    fun pull(deviceId: String?, deviceFile: String, localFile: String, su:Boolean = false) {
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "pull", deviceFile, UnicodeCharConvert.string2Unicode(localFile))
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         if (su && result.contains("Permission denied",true)){
@@ -188,7 +208,9 @@ object ADBUtil {
     /**
      * 上传文件
      */
-    fun push(deviceId: String, localFile: String, deviceDir: String, su: Boolean) {
+    fun push(deviceId: String?, localFile: String, deviceDir: String, su: Boolean) {
+        deviceId ?: return
+
         val fileName = localFile.split(File.separator).last()
         val newFileName = "${System.currentTimeMillis()}"
         val command = arrayOf("-s", deviceId, "push", localFile, deviceDir+newFileName)
@@ -205,7 +227,9 @@ object ADBUtil {
     /**
      * 复制文件
      */
-    fun copyFile(deviceId: String,originalFile: String,targetFile: String,su:Boolean = false){
+    fun copyFile(deviceId: String?,originalFile: String,targetFile: String,su:Boolean = false){
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell",if (su) "su -c" else "","cp", originalFile, targetFile)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -213,7 +237,9 @@ object ADBUtil {
     /**
      * 设置文件权限
      */
-    fun setPermission(deviceId: String,permission:String,file: String,su:Boolean = false){
+    fun setPermission(deviceId: String?,permission:String,file: String,su:Boolean = false){
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell",if (su) "su -c" else "","chmod", "-R", permission,file)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -221,7 +247,9 @@ object ADBUtil {
     /**
      * 移动文件
      */
-    fun moveFile(deviceId: String, oldFile: String, newFile: String, su: Boolean) {
+    fun moveFile(deviceId: String?, oldFile: String, newFile: String, su: Boolean) {
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell",if (su) "su -c" else "","mv", oldFile,newFile)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -229,7 +257,9 @@ object ADBUtil {
     /**
      * 列出文件
      */
-    fun fileList(deviceId: String,dir:String,su:Boolean = false): ArrayList<FileBean> {
+    fun fileList(deviceId: String?,dir:String,su:Boolean = false): ArrayList<FileBean> {
+        deviceId ?: return arrayListOf()
+
         val command = arrayOf("-s", deviceId, "shell",if (su) "su -c" else "","ls","-p","-s","-A","-L","-h", dir)
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -250,7 +280,9 @@ object ADBUtil {
     /**
      * 删除文件
      */
-    fun deleteFile(deviceId: String,file:String,su:Boolean = false) {
+    fun deleteFile(deviceId: String?,file:String,su:Boolean = false) {
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell",if (su) "su -c" else "","rm","-r", file)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -260,7 +292,9 @@ object ADBUtil {
     /**
      * 获取wlan0的ip地址
      */
-    fun getWlan0IP(deviceId:String,v4:Boolean = true): String? {
+    fun getWlan0IP(deviceId:String?,v4:Boolean = true): String? {
+        deviceId ?: return null
+
         val command = arrayOf("-s",deviceId,"shell","ip","addr","show","wlan0","|","grep","'inet'","|","cut","-d","'/'","-f","1")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -274,7 +308,9 @@ object ADBUtil {
     /**
      * 获取Mac地址
      */
-    fun getMac(deviceId:String): String {
+    fun getMac(deviceId:String?): String {
+        deviceId ?: return ""
+
         val command = arrayOf("-s",deviceId,"shell","ip","addr","show","wlan0","|","grep","'link/ether'")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -284,7 +320,9 @@ object ADBUtil {
     /**
      * 打开tcpip 5555
      */
-    fun openWIFIConnect(deviceId: String): Boolean {
+    fun openWIFIConnect(deviceId: String?): Boolean {
+        deviceId ?: return false
+
         val command = arrayOf("-s",deviceId,"tcpip","5555")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -294,7 +332,9 @@ object ADBUtil {
     /**
      * 连接设备
      */
-    fun connectDevice(deviceId: String): Boolean {
+    fun connectDevice(deviceId: String?): Boolean {
+        deviceId ?: return false
+
         val command = arrayOf("connect",deviceId)
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -304,7 +344,8 @@ object ADBUtil {
     /**
      * 断开设备
      */
-    fun disconnectDevice(deviceId: String): Boolean {
+    fun disconnectDevice(deviceId: String?): Boolean {
+        deviceId ?: return false
         val command = arrayOf("disconnect",deviceId)
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -316,7 +357,9 @@ object ADBUtil {
     /**
      * 停止应用
      */
-    fun stopApplication(deviceId: String, pk: String) {
+    fun stopApplication(deviceId: String?, pk: String) {
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell", "am", "force-stop", pk)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -324,7 +367,9 @@ object ADBUtil {
     /**
      * 卸载
      */
-    fun unInstall(deviceId: String, pk: String) {
+    fun unInstall(deviceId: String?, pk: String) {
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "uninstall", pk)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -333,7 +378,9 @@ object ADBUtil {
      * 清空数据
      * FIXME: 似乎没有正常工作
      */
-    fun cleanAppData(deviceId: String, pk: String) {
+    fun cleanAppData(deviceId: String?, pk: String) {
+        deviceId ?: return
+
         stopApplication(deviceId, pk)
         val command = arrayOf("-s", deviceId, "shell","pm","clear", pk)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
@@ -346,7 +393,9 @@ object ADBUtil {
      * 或
      * INSTALL_FAILED_DEPRECATED_SDK_VERSION: App package must target at least SDK version 23, but found 7
      */
-    fun install(deviceId:String,filePath:String){
+    fun install(deviceId:String?,filePath:String){
+        deviceId ?: return
+
         val command = arrayOf("-s",deviceId,"install",filePath)
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -361,7 +410,9 @@ object ADBUtil {
         }
     }
 
-    fun installXapk(deviceId:String,dirPath:String,obbDir:String) {
+    fun installXapk(deviceId:String?,dirPath:String,obbDir:String) {
+        deviceId ?: return
+
         val command = arrayListOf("-s",deviceId,"install-multiple")
         File(dirPath).listFiles()?.forEach {
             if (it.name.endsWith(".apk",true)){
@@ -382,7 +433,9 @@ object ADBUtil {
     /**
      * 安装用于目标版本小于6.0的应用
      */
-    private fun installLow(deviceId:String,filePath:String){
+    private fun installLow(deviceId:String?,filePath:String){
+        deviceId ?: return
+
         val command = arrayOf("-s",deviceId,"install","--bypass-low-target-sdk-block",filePath)
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -396,7 +449,9 @@ object ADBUtil {
     /**
      * 获取应用安装路径
      */
-    fun getApkPath(deviceId: String, pk: String): String? {
+    fun getApkPath(deviceId: String?, pk: String): String? {
+        deviceId ?: return null
+
         val command = arrayOf("-s", deviceId, "shell", "pm", "path", pk)
         return CLUtil.execute(arrayOf(ADB_PATH, *command)).split(":").lastOrNull()?.replace("\n","")?.replace("\r","")
     }
@@ -404,7 +459,9 @@ object ADBUtil {
     /**
      * 获取当前页面
      */
-    fun getCurrentActivity(deviceId: String): String {
+    fun getCurrentActivity(deviceId: String?): String {
+        deviceId ?: return ""
+
         val command = arrayOf("-s", deviceId, "shell", "dumpsys", "window", "|", "grep", "mCurrentFocus")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
@@ -419,7 +476,9 @@ object ADBUtil {
     /**
      * 输入文本
      */
-    fun inputText(deviceId: String, text: String){
+    fun inputText(deviceId: String?, text: String){
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell","input","text", text)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -433,7 +492,9 @@ object ADBUtil {
      * 176:打开系统设置 187:切换应用 207:打开联系人 208:打开日历 209:打开音乐 210:打开计算器
      * 220:降低屏幕亮度 221:提高屏幕亮度 223:系统休眠 224:点亮屏幕 231:打开语音助手
      */
-    fun inputKey(deviceId: String, event: String){
+    fun inputKey(deviceId: String?, event: String){
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell","input","keyevent", event)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
@@ -441,26 +502,48 @@ object ADBUtil {
     /**
      * 输入滑动
      */
-    fun inputSwipe(deviceId: String, startX: String, startY: String, endX: String, endY: String){
+    fun inputSwipe(deviceId: String?, startX: String, startY: String, endX: String, endY: String){
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell","input","swipe", startX,startY,endX,endY)
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
     // endregion
 
     // region 开发
-    fun enableAdbWifi(deviceId: String) {
+    fun enableAdbWifi(deviceId: String?) {
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "tcpip","5555")
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
-    fun showBorder(deviceId: String,show: Boolean) {
+    fun showBorder(deviceId: String?,show: Boolean) {
+        deviceId ?: return
+
         val command = arrayOf("-s", deviceId, "shell", "setprop","debug.layout","$show;","service","call","activity","1599295570")
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
-    fun isShowBorder(deviceId: String): Boolean {
+    fun isShowBorder(deviceId: String?): Boolean {
+        deviceId ?: return false
+
         val command = arrayOf("-s", deviceId, "shell", "getprop","debug.layout")
         val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
         val data = parseResult(result)
         return data.getOrNull(0)?.getOrNull(0).toBoolean()
+    }
+    fun isShowTouchLocations(deviceId: String?): Boolean {
+        deviceId ?: return false
+
+        val command = arrayOf("-s", deviceId, "shell", "settings","get","system","pointer_location")
+        val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
+        val data = parseResult(result)
+        return data.getOrNull(0)?.getOrNull(0) == "1"
+    }
+    fun showTouchLocations(deviceId: String?,show: Boolean) {
+        deviceId ?: return
+
+        val command = arrayOf("-s", deviceId, "shell", "settings","put","system","pointer_location",if(show) "1" else "0")
+        CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
     // endregion
 

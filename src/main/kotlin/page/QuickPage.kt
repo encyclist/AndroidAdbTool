@@ -50,6 +50,7 @@ fun QuickPage(device: DeviceInfo) {
 private fun CommonFunction(device: DeviceInfo) {
     var showInputTextDialog by remember { mutableStateOf(false) }
     var showBorder by remember { mutableStateOf(ADBUtil.isShowBorder(device.device)) }
+    var showTouchLocations by remember { mutableStateOf(ADBUtil.isShowTouchLocations(device.device)) }
 
     BaseQuick("常用功能", color = Color(255, 152, 0)) {
         FlowRow() {
@@ -68,6 +69,10 @@ private fun CommonFunction(device: DeviceInfo) {
             QuickItem("ic_app_info.svg", if(showBorder) "隐藏布局边界" else "显示布局边界", modifier = Modifier.clickable {
                 ADBUtil.showBorder(device.device,!showBorder)
                 showBorder = ADBUtil.isShowBorder(device.device)
+            })
+            QuickItem("ic_app_info.svg", if(showTouchLocations) "隐藏指针位置" else "显示指针位置", modifier = Modifier.clickable {
+                ADBUtil.showTouchLocations(device.device,!showTouchLocations)
+                showTouchLocations = ADBUtil.isShowTouchLocations(device.device)
             })
         }
     }
@@ -141,7 +146,7 @@ private fun BaseQuick(title: String, color: Color = Color.Transparent, content: 
 
 @Composable
 private fun QuickItem(ttf: String? = null, title: String? = null, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.padding(10.dp).size(120.dp).padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = modifier.padding(10.dp).width(130.dp).height(120.dp).padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         if (ttf == null || title == null) return@Column
         Box(modifier = Modifier.clip(RoundedCornerShape(14.dp)).background(randomColor.random())) {
             Image(

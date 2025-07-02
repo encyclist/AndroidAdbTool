@@ -1,9 +1,8 @@
 package config
 
 import bean.DeviceInfo
-import com.alibaba.fastjson.JSON
+import kotlinx.serialization.json.Json
 import tool.FileUtil
-
 /**
  * @auth 二宁
  * @date 2023/11/24
@@ -16,7 +15,7 @@ object DeviceRecordUtil {
         val configFile = FileUtil.getConfigFile(CONFIG_DEVICE_RECORD)
         deviceList.clear()
         try {
-            deviceList.addAll(JSON.parseArray(configFile.readText(),DeviceInfo::class.java))
+            deviceList.addAll(Json.decodeFromString<List<DeviceInfo>>(configFile.readText()))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -38,7 +37,7 @@ object DeviceRecordUtil {
         }
         deviceList.addAll(list)
         val configFile = FileUtil.getConfigFile(CONFIG_DEVICE_RECORD)
-        configFile.writeText(JSON.toJSONString(JSON.toJSON(deviceList)))
+        configFile.writeText(Json.encodeToString(deviceList))
     }
 
     fun saveDevice(device: DeviceInfo){
@@ -48,7 +47,7 @@ object DeviceRecordUtil {
         }
         deviceList.add(device)
         val configFile = FileUtil.getConfigFile(CONFIG_DEVICE_RECORD)
-        configFile.writeText(JSON.toJSONString(JSON.toJSON(deviceList)))
+        configFile.writeText(Json.encodeToString(deviceList))
     }
 
     fun deleteDevice(device: DeviceInfo){
@@ -56,7 +55,7 @@ object DeviceRecordUtil {
         if(targetDevice != null){
             deviceList.remove(targetDevice)
             val configFile = FileUtil.getConfigFile(CONFIG_DEVICE_RECORD)
-            configFile.writeText(JSON.toJSONString(JSON.toJSON(deviceList)))
+            configFile.writeText(Json.encodeToString(deviceList))
         }
     }
 }

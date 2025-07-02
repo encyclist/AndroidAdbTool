@@ -1,9 +1,10 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
-val versionName = "1.0.0"
+val versionName = "1.0.1"
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization") version "2.2.0"
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
 }
@@ -22,7 +23,7 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     // implementation(files("libs/bundletool-all-1.15.6.jar"))
     implementation(compose.desktop.currentOs)
-    implementation("com.alibaba:fastjson:1.2.83")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 }
 
 // https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Native_distributions_and_local_execution#packaging-resources

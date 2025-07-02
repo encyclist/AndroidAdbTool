@@ -115,7 +115,7 @@ private fun ConnectDevices(refreshConnectedDevicesList:()->Unit,connectedDevices
                             text = "${device.deviceName}\n${device.deviceModel}",
                             color = if (selectIndexDevice == it) Color(139, 195, 74) else Color.Black
                         )
-                        if (deviceName.contains(device.deviceName) || deviceName.contains(device.deviceModel)) {
+                        if (deviceName.contains(device.deviceName ?: "") || deviceName.contains(device.deviceModel ?: "")) {
                             Icon(Icons.Default.Check, contentDescription = "", tint = Color(139, 195, 74))
                         }
                     }
