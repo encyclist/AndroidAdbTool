@@ -51,6 +51,7 @@ private fun CommonFunction(device: DeviceInfo) {
     var showInputTextDialog by remember { mutableStateOf(false) }
     var showBorder by remember { mutableStateOf(ADBUtil.isShowBorder(device.device)) }
     var showTouchLocations by remember { mutableStateOf(ADBUtil.isShowTouchLocations(device.device)) }
+    var showHWUIProfile by remember { mutableStateOf(ADBUtil.isShowHWUIProfile(device.device)) }
 
     BaseQuick("常用功能", color = Color(255, 152, 0)) {
         FlowRow() {
@@ -73,6 +74,10 @@ private fun CommonFunction(device: DeviceInfo) {
             QuickItem("ic_app_info.svg", if(showTouchLocations) "隐藏指针位置" else "显示指针位置", modifier = Modifier.clickable {
                 ADBUtil.showTouchLocations(device.device,!showTouchLocations)
                 showTouchLocations = ADBUtil.isShowTouchLocations(device.device)
+            })
+            QuickItem("ic_app_info.svg", if(showHWUIProfile) "隐藏GPU呈现模式" else "显示GPU呈现模式", modifier = Modifier.clickable {
+                ADBUtil.showHWUIProfile(device.device,!showHWUIProfile)
+                showHWUIProfile = ADBUtil.isShowHWUIProfile(device.device)
             })
         }
     }

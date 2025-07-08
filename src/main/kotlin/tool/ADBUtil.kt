@@ -545,6 +545,23 @@ object ADBUtil {
         val command = arrayOf("-s", deviceId, "shell", "settings","put","system","pointer_location",if(show) "1" else "0")
         CLUtil.execute(arrayOf(ADB_PATH, *command))
     }
+    fun isShowHWUIProfile(deviceId: String?): Boolean {
+        deviceId ?: return false
+
+        val command = arrayOf("-s", deviceId, "shell", "getprop","debug.hwui.profile")
+        val result = CLUtil.execute(arrayOf(ADB_PATH, *command))
+        val data = parseResult(result)
+        val r = data.getOrNull(0)?.getOrNull(0)
+        return r == "true" || r == "visual_bars"
+    }
+    fun showHWUIProfile(deviceId: String?,show: Boolean) {
+        deviceId ?: return
+
+        var command = arrayOf("-s", deviceId, "shell", "setprop","debug.hwui.profile",if(show) "visual_bars" else "false")
+        CLUtil.execute(arrayOf(ADB_PATH, *command))
+        command = arrayOf("-s", deviceId, "shell", "service","call","activity","1599295570")
+        CLUtil.execute(arrayOf(ADB_PATH, *command))
+    }
     // endregion
 
     /**
