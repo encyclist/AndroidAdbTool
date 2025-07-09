@@ -10,6 +10,13 @@ import javax.swing.filechooser.FileSystemView
  * @date 2023/11/3
  */
 object FileUtil {
+    private val mediaFileType = arrayOf(
+        ".mp3",".aac",".m4a",".flac",".m4a",".wav",".aiff",".aif",".wma",".ogg",".oga",".opus",".m4a",".ac3",".dts",".mid",".midi",".au",".amr",".ra",".rm",".ape",".mka",
+        ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".mpeg", ".mpg", ".vob", ".ts", ".m2ts", ".m4v", ".3gp", ".3g2", ".ogv", ".rm", ".rmvb", ".asf", ".divx", ".f4v", ".mts", ".m2ts",".vtt",".m3u", ".m3u8",
+        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp", ".heif", ".hei", ".svg", ".psd", ".ai", ".eps", ".cr2", ".nef", ".ico", ".cur", ".pcx", ".tga", ".ppm", ".pgm", ".xcf", ".hdr", ".exr",".psd",
+        ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".rtf", ".odt", ".ods", ".odp", ".epub", ".mobi", ".azw", ".azw3", ".fb2", ".chm",
+    )
+
     fun getSelfPath(): String {
         // 方法一：获取当前可执行jar包所在目录
         var filePath = System.getProperty("java.class.path")
@@ -140,5 +147,9 @@ object FileUtil {
         }else{
             home
         }
+    }
+
+    fun isMediaFile(file: String): Boolean {
+        return mediaFileType.any { file.endsWith(it,true) }
     }
 }

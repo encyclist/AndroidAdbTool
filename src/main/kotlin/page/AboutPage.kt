@@ -16,9 +16,7 @@ import androidx.compose.ui.unit.dp
 import tool.ADBUtil
 import tool.FileUtil
 import tool.PlatformUtil
-import java.awt.Desktop
 import java.io.File
-import java.net.URI
 
 /**
  * @auth 二宁
