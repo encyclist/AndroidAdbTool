@@ -1,6 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
-val versionName = "1.0.1"
+val versionName = "1.0.2"
 
 plugins {
     kotlin("jvm")
